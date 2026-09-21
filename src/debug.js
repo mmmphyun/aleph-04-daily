@@ -27,13 +27,13 @@ function updateView() {
 
   const status = debugState.status;
   if (!status) {
-    elCurrentStatusBadge.className = 'badge badge-stale';
+    elCurrentStatusBadge.className = 'stamp stamp-stale';
     elCurrentStatusBadge.textContent = 'INIT (초기 미설정)';
   } else if (status.freshness === 'fresh') {
-    elCurrentStatusBadge.className = 'badge badge-fresh';
+    elCurrentStatusBadge.className = 'stamp stamp-fresh';
     elCurrentStatusBadge.textContent = `FRESH (${status.error_code})`;
   } else {
-    elCurrentStatusBadge.className = 'badge badge-stale';
+    elCurrentStatusBadge.className = 'stamp stamp-stale';
     elCurrentStatusBadge.textContent = `STALE (${status.error_code})`;
   }
 

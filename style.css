@@ -1,22 +1,28 @@
+/* ==========================================================================
+   THE DAILY HACKER GAZETTE — BROADSHEET DESIGN SYSTEM
+   ========================================================================== */
+
 :root {
-  --bg-primary: #0f172a;
-  --bg-secondary: #1e293b;
-  --bg-card: #1e293b;
-  --bg-subtle: #334155;
-  --text-primary: #f8fafc;
-  --text-secondary: #94a3b8;
-  --text-muted: #64748b;
-  --border-color: #334155;
-  --accent-primary: #38bdf8;
-  --accent-hover: #0284c7;
-  --success: #22c55e;
-  --success-bg: rgba(34, 197, 94, 0.12);
-  --warning: #f59e0b;
-  --warning-bg: rgba(245, 158, 11, 0.12);
-  --danger: #ef4444;
-  --danger-bg: rgba(239, 68, 68, 0.12);
-  --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --bg-paper: #f6f3eb;
+  --bg-paper-tint: #ece7db;
+  --bg-paper-card: #ffffff;
+  --ink-black: #1a1816;
+  --ink-headline: #11100f;
+  --ink-secondary: #4a453e;
+  --ink-muted: #78716c;
+  --border-rule: #d5cec0;
+  --border-dark: #1a1816;
+  --accent-orange: #d9531e;
+  --accent-orange-subtle: #fbeee8;
+  --stamp-red: #991b1b;
+  --stamp-red-bg: #fee2e2;
+  --stamp-green: #166534;
+  --stamp-green-bg: #dcfce7;
+
+  --font-serif: "Playfair Display", Georgia, "Times New Roman", Times, serif;
+  --font-body: "Charter", "Georgia", "Iowan Old Style", serif;
+  --font-mono: "SF Mono", "Courier Prime", "Courier New", monospace;
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
 * {
@@ -26,45 +32,91 @@
 }
 
 body {
-  background-color: var(--bg-primary);
-  color: var(--text-primary);
-  font-family: var(--font-family);
+  background-color: var(--bg-paper);
+  color: var(--ink-black);
+  font-family: var(--font-body);
   line-height: 1.6;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  background-image: radial-gradient(#e5dec9 0.75px, transparent 0.75px);
+  background-size: 24px 24px;
 }
 
 .container {
-  max-width: 960px;
+  max-width: 980px;
   margin: 0 auto;
-  padding: 2rem 1.5rem;
+  padding: 2.5rem 1.5rem;
   width: 100%;
 }
 
-/* Header */
-header {
-  border-bottom: 1px solid var(--border-color);
-  padding-bottom: 1.5rem;
+/* ==========================================================================
+   MASTHEAD (신문 제호 및 상단 정보)
+   ========================================================================== */
+
+.masthead {
   margin-bottom: 2rem;
+  border-bottom: 3px double var(--border-dark);
+  padding-bottom: 1rem;
+}
+
+.masthead-meta-top {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
-  flex-wrap: wrap;
-  gap: 1rem;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-secondary);
+  border-bottom: 1px solid var(--border-rule);
+  padding-bottom: 0.4rem;
+  margin-bottom: 1rem;
 }
 
-.header-title h1 {
-  font-size: 1.75rem;
-  font-weight: 700;
-  letter-spacing: -0.025em;
-  color: var(--text-primary);
+.masthead-title-wrap {
+  text-align: center;
+  padding: 0.5rem 0 1rem;
 }
 
-.header-title p {
-  color: var(--text-secondary);
+.masthead-motto {
+  font-family: var(--font-serif);
+  font-style: italic;
   font-size: 0.95rem;
-  margin-top: 0.25rem;
+  color: var(--ink-muted);
+  margin-bottom: 0.25rem;
+}
+
+.masthead-title {
+  font-family: var(--font-serif);
+  font-size: 3.2rem;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+  color: var(--ink-headline);
+  text-transform: uppercase;
+}
+
+.masthead-sub {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--accent-orange);
+  letter-spacing: 0.05em;
+  margin-top: 0.5rem;
+  font-weight: 600;
+}
+
+.masthead-bar-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  border-top: 1px solid var(--border-dark);
+  border-bottom: 1px solid var(--border-dark);
+  padding: 0.4rem 0.5rem;
+  margin-top: 0.75rem;
+  background-color: var(--bg-paper-tint);
 }
 
 .nav-links {
@@ -72,205 +124,224 @@ header {
   gap: 0.75rem;
 }
 
+/* ==========================================================================
+   BUTTONS
+   ========================================================================== */
+
 .btn {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
-  font-size: 0.875rem;
-  font-weight: 600;
+  gap: 0.4rem;
+  padding: 0.4rem 0.85rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
   text-decoration: none;
   cursor: pointer;
-  border: 1px solid transparent;
-  transition: background-color 0.15s, border-color 0.15s, color 0.15s;
+  border: 1px solid var(--border-dark);
+  background-color: var(--bg-paper-card);
+  color: var(--ink-black);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  transition: background-color 0.1s, color 0.1s;
+}
+
+.btn:hover {
+  background-color: var(--ink-black);
+  color: var(--bg-paper);
 }
 
 .btn-primary {
-  background-color: var(--accent-primary);
-  color: #0f172a;
+  background-color: var(--accent-orange);
+  color: #ffffff;
+  border-color: var(--accent-orange);
 }
 
 .btn-primary:hover {
-  background-color: var(--accent-hover);
+  background-color: #b83d0f;
   color: #ffffff;
-}
-
-.btn-secondary {
-  background-color: var(--bg-secondary);
-  color: var(--text-primary);
-  border-color: var(--border-color);
-}
-
-.btn-secondary:hover {
-  background-color: var(--bg-subtle);
-}
-
-.btn-danger {
-  background-color: var(--danger);
-  color: #ffffff;
-}
-
-.btn-danger:hover {
-  background-color: #dc2626;
-}
-
-.btn-warning {
-  background-color: var(--warning);
-  color: #0f172a;
 }
 
 .btn-sm {
-  padding: 0.35rem 0.65rem;
-  font-size: 0.8rem;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.7rem;
 }
 
-/* Status Banner */
+/* ==========================================================================
+   STATUS STAMP BANNER (도장 찍힌 듯한 장애/정상 상태 배너)
+   ========================================================================== */
+
 .status-banner {
-  padding: 1rem 1.25rem;
-  border-radius: 8px;
-  margin-bottom: 1.75rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
-  border: 1px solid transparent;
+  padding: 0.85rem 1.25rem;
+  margin-bottom: 2rem;
+  border: 2px solid;
+  position: relative;
+  background-color: var(--bg-paper-card);
 }
 
 .status-banner.fresh {
-  background-color: var(--success-bg);
-  border-color: var(--success);
-  color: var(--success);
+  border-color: var(--stamp-green);
+  background-color: var(--stamp-green-bg);
 }
 
 .status-banner.stale {
-  background-color: var(--warning-bg);
-  border-color: var(--warning);
-  color: var(--warning);
+  border-color: var(--stamp-red);
+  background-color: var(--stamp-red-bg);
 }
 
 .status-content {
   display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
-
-.status-badge-row {
-  display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 1rem;
 }
 
-.badge {
-  display: inline-block;
+.stamp {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
   padding: 0.2rem 0.6rem;
-  border-radius: 9999px;
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.05em;
+  border: 2px solid;
   text-transform: uppercase;
+  transform: rotate(-1deg);
+  display: inline-block;
 }
 
-.badge-fresh {
-  background-color: var(--success);
-  color: #0f172a;
+.stamp-fresh {
+  color: var(--stamp-green);
+  border-color: var(--stamp-green);
 }
 
-.badge-stale {
-  background-color: var(--warning);
-  color: #0f172a;
-}
-
-.badge-error {
-  background-color: var(--danger);
-  color: #ffffff;
+.stamp-stale {
+  color: var(--stamp-red);
+  border-color: var(--stamp-red);
 }
 
 .status-desc {
   font-size: 0.9rem;
-  color: var(--text-primary);
+  color: var(--ink-headline);
+  font-weight: 500;
 }
 
-/* Cards Grid */
-.grid {
+/* ==========================================================================
+   BROADSHEET COLUMNS (2-COLUMN EDITORIAL GRID)
+   ========================================================================== */
+
+.broadsheet-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.5rem;
-  margin-bottom: 2rem;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 2rem;
+  margin-bottom: 2.5rem;
+  position: relative;
 }
 
-@media (max-width: 720px) {
-  .grid {
+@media (max-width: 768px) {
+  .broadsheet-grid {
     grid-template-columns: 1fr;
+    gap: 1.5rem;
   }
 }
 
-.card {
-  background-color: var(--bg-card);
-  border: 1px solid var(--border-color);
-  border-radius: 10px;
-  padding: 1.5rem;
+.column {
+  display: flex;
+  flex-direction: column;
 }
 
-.card-title {
-  font-size: 0.85rem;
-  font-weight: 600;
+.column-header {
+  font-family: var(--font-serif);
+  font-size: 1.2rem;
+  font-weight: 700;
+  border-bottom: 2px solid var(--border-dark);
+  padding-bottom: 0.35rem;
+  margin-bottom: 1.25rem;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--text-secondary);
-  margin-bottom: 0.75rem;
+  letter-spacing: 0.03em;
+  color: var(--ink-headline);
+}
+
+/* Primary Metric Block */
+.metric-box {
+  background-color: var(--bg-paper-card);
+  border: 1px solid var(--border-rule);
+  padding: 1.75rem 1.5rem;
+  box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.05);
+}
+
+.metric-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-muted);
+  margin-bottom: 0.5rem;
 }
 
 .metric-value-container {
   display: flex;
   align-items: baseline;
   gap: 0.75rem;
-  margin-bottom: 0.5rem;
+  margin-bottom: 1rem;
 }
 
 .metric-number {
-  font-size: 2.5rem;
-  font-weight: 800;
   font-family: var(--font-mono);
-  color: var(--text-primary);
+  font-size: 3.4rem;
+  font-weight: 900;
+  letter-spacing: -0.04em;
   line-height: 1;
+  color: var(--ink-headline);
 }
 
 .metric-unit {
+  font-family: var(--font-mono);
   font-size: 1.1rem;
-  color: var(--text-muted);
-  font-weight: 500;
+  color: var(--accent-orange);
+  font-weight: 700;
+  text-transform: uppercase;
 }
 
 .metric-delta {
-  font-size: 1rem;
-  font-weight: 600;
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  font-weight: 700;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--border-rule);
+  background-color: var(--bg-paper);
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
+  gap: 0.4rem;
 }
 
 .delta-increase {
-  color: var(--accent-primary);
+  color: var(--stamp-green);
+  border-color: #86efac;
+  background-color: #f0fdf4;
 }
 
 .delta-decrease {
-  color: var(--warning);
+  color: var(--stamp-red);
+  border-color: #fca5a5;
+  background-color: #fef2f2;
 }
 
 .delta-neutral {
-  color: var(--text-muted);
+  color: var(--ink-muted);
 }
 
-/* Metadata List */
+/* Meta Data Table (Broadsheet Style) */
 .meta-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.875rem;
+  font-size: 0.85rem;
+  background-color: var(--bg-paper-card);
+  border: 1px solid var(--border-rule);
 }
 
 .meta-table tr {
-  border-bottom: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-rule);
 }
 
 .meta-table tr:last-child {
@@ -279,69 +350,126 @@ header {
 
 .meta-table th {
   text-align: left;
-  padding: 0.65rem 0;
-  color: var(--text-secondary);
-  font-weight: 500;
-  width: 38%;
+  padding: 0.75rem 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--ink-secondary);
+  background-color: var(--bg-paper-tint);
+  width: 40%;
 }
 
 .meta-table td {
-  text-align: right;
-  padding: 0.65rem 0;
-  color: var(--text-primary);
+  padding: 0.75rem 1rem;
   font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--ink-black);
+  text-align: right;
   word-break: break-all;
 }
 
 .meta-table td a {
-  color: var(--accent-primary);
-  text-decoration: none;
-}
-
-.meta-table td a:hover {
+  color: var(--accent-orange);
   text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
-/* History Section */
-.section-title {
-  font-size: 1.25rem;
-  font-weight: 700;
+/* ==========================================================================
+   LEDGER SECTION (일별 보존 기록 장부)
+   ========================================================================== */
+
+.section-head {
+  border-bottom: 2px solid var(--border-dark);
+  padding-bottom: 0.4rem;
   margin-bottom: 1rem;
-  color: var(--text-primary);
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
 }
 
-/* Top Stories List */
+.section-title {
+  font-family: var(--font-serif);
+  font-size: 1.35rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--ink-headline);
+}
+
+.section-sub {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--ink-muted);
+}
+
+.history-table-container {
+  overflow-x: auto;
+  border: 1px solid var(--border-dark);
+  background-color: var(--bg-paper-card);
+  margin-bottom: 2.5rem;
+}
+
+.history-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+  text-align: left;
+}
+
+.history-table th {
+  background-color: var(--bg-paper-tint);
+  color: var(--ink-headline);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--border-dark);
+}
+
+.history-table td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--border-rule);
+  font-family: var(--font-mono);
+  color: var(--ink-black);
+}
+
+.history-table tr:last-child td {
+  border-bottom: none;
+}
+
+/* ==========================================================================
+   FRONT-PAGE STORIES (실시간 TOP 5 기사 목록)
+   ========================================================================== */
+
 .top-stories-list {
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  border: 1px solid var(--border-dark);
+  background-color: var(--bg-paper-card);
+  margin-bottom: 2.5rem;
 }
 
 .top-story-item {
   display: flex;
-  align-items: flex-start;
-  gap: 1rem;
-  padding: 0.85rem 1rem;
-  background-color: var(--bg-card);
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  transition: border-color 0.15s, transform 0.15s;
+  align-items: baseline;
+  gap: 1.25rem;
+  padding: 0.85rem 1.25rem;
+  border-bottom: 1px solid var(--border-rule);
 }
 
-.top-story-item:hover {
-  border-color: var(--accent-primary);
-  transform: translateY(-1px);
+.top-story-item:last-child {
+  border-bottom: none;
 }
 
 .story-rank {
-  font-size: 1.1rem;
-  font-weight: 800;
-  color: var(--accent-primary);
-  font-family: var(--font-mono);
-  min-width: 1.75rem;
-  text-align: center;
-  padding-top: 0.1rem;
+  font-family: var(--font-serif);
+  font-size: 1.25rem;
+  font-weight: 900;
+  color: var(--accent-orange);
+  min-width: 1.5rem;
+  text-align: right;
 }
 
 .story-content {
@@ -349,81 +477,61 @@ header {
 }
 
 .story-title {
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: var(--text-primary);
+  font-family: var(--font-serif);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--ink-headline);
   text-decoration: none;
-  line-height: 1.4;
-  display: inline-block;
-  margin-bottom: 0.35rem;
+  line-height: 1.35;
+  margin-bottom: 0.25rem;
+  display: block;
 }
 
 .story-title:hover {
-  color: var(--accent-primary);
+  color: var(--accent-orange);
+  text-decoration: underline;
 }
 
 .story-meta {
-  font-size: 0.8rem;
-  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--ink-muted);
   display: flex;
-  gap: 0.75rem;
+  gap: 1rem;
   flex-wrap: wrap;
 }
 
-.story-meta span {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
-}
+/* ==========================================================================
+   PANELS & CODE INSPECTORS (디버그 및 증거 대조용)
+   ========================================================================== */
 
-.history-table-container {
-  overflow-x: auto;
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  background-color: var(--bg-card);
+.panel {
+  background-color: var(--bg-paper-card);
+  border: 1px solid var(--border-dark);
+  padding: 1.5rem;
   margin-bottom: 2rem;
 }
 
-.history-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.875rem;
-  text-align: left;
-}
-
-.history-table th {
-  background-color: var(--bg-subtle);
-  color: var(--text-secondary);
-  font-weight: 600;
-  padding: 0.75rem 1rem;
-  border-bottom: 1px solid var(--border-color);
-}
-
-.history-table td {
-  padding: 0.75rem 1rem;
-  border-bottom: 1px solid var(--border-color);
-  font-family: var(--font-mono);
-  color: var(--text-primary);
-}
-
-.history-table tr:last-child td {
-  border-bottom: none;
-}
-
-/* Diagnostic / Debug Panel */
-.panel {
-  background-color: var(--bg-card);
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  padding: 1.25rem;
-  margin-bottom: 1.5rem;
-}
-
 .panel-title {
-  font-size: 1.1rem;
+  font-family: var(--font-serif);
+  font-size: 1.15rem;
   font-weight: 700;
+  text-transform: uppercase;
   margin-bottom: 0.75rem;
-  color: var(--text-primary);
+  color: var(--ink-headline);
+}
+
+.code-box {
+  background-color: #1a1816;
+  border: 1px solid var(--border-dark);
+  padding: 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: #f5f2eb;
+  overflow-x: auto;
+  max-height: 320px;
+  white-space: pre-wrap;
+  word-break: break-all;
 }
 
 .button-group {
@@ -433,26 +541,16 @@ header {
   margin-bottom: 1rem;
 }
 
-.code-box {
-  background-color: #0b1120;
-  border: 1px solid var(--border-color);
-  border-radius: 6px;
-  padding: 1rem;
-  font-family: var(--font-mono);
-  font-size: 0.8rem;
-  color: #38bdf8;
-  overflow-x: auto;
-  max-height: 360px;
-  white-space: pre-wrap;
-  word-break: break-all;
-}
+/* ==========================================================================
+   FOOTER
+   ========================================================================== */
 
-/* Footer */
 footer {
   margin-top: auto;
-  border-top: 1px solid var(--border-color);
-  padding: 1.5rem 0;
+  border-top: 3px double var(--border-dark);
+  padding: 1.5rem 0 2rem;
   text-align: center;
-  font-size: 0.8rem;
-  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--ink-muted);
 }

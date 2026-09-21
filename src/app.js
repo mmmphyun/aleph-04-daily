@@ -158,13 +158,13 @@ function render() {
   // 1. 상태 배너 및 에러 핸들링 (C17, C18, C19)
   if (!status || status.freshness === 'fresh') {
     elStatusBanner.className = 'status-banner fresh';
-    elStatusBadge.className = 'badge badge-fresh';
+    elStatusBadge.className = 'stamp stamp-fresh';
     elStatusBadge.textContent = 'FRESH (정상)';
-    elStatusDesc.textContent = '외부 원천과 정상 통신 중입니다. 실시간 최신 관측값입니다.';
+    elStatusDesc.textContent = '외부 원천 통신 회선 정상. 실시간 최신 관측 전보입니다.';
     elRetryBtn.style.display = 'none';
   } else {
     elStatusBanner.className = 'status-banner stale';
-    elStatusBadge.className = 'badge badge-stale';
+    elStatusBadge.className = 'stamp stamp-stale';
     elStatusBadge.textContent = `STALE (${status.error_code.toUpperCase()})`;
 
     const errorGuides = {
