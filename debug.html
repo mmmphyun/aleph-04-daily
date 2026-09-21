@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>T04 디버그 시뮬레이션 및 API 진단</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="header-title">
+        <h1>T04 합성 시뮬레이터 & API 진단</h1>
+        <p>실패 5종 재생, 상태 전이, 마지막 정상값 보존 및 복구 검증 (카드 3)</p>
+      </div>
+      <div class="nav-links">
+        <a href="./index.html" class="btn btn-primary">
+          메인 정보판으로 이동
+        </a>
+      </div>
+    </header>
+
+    <!-- 실시간 API 진단 패널 -->
+    <div class="panel">
+      <div class="panel-title">1. 실시간 Hacker News API 핑 & 진단 (Live Connectivity)</div>
+      <p style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 0.75rem;">
+        Hacker News Firebase 엔드포인트(<code>https://hacker-news.firebaseio.com/v0/maxitem.json</code>)에 직접 연결하여 RTT, 헤더, 원자료 유효성을 진단합니다.
+      </p>
+      <button id="btn-ping" class="btn btn-secondary btn-sm" style="margin-bottom: 0.75rem;">
+        실제 API 핑(Ping) 전송
+      </button>
+      <pre id="ping-result" class="code-box">[실제 API 핑 전송 버튼을 누르면 진단 결과가 표시됩니다]</pre>
+    </div>
+
+    <!-- 현재 시뮬레이션 상태 요약 -->
+    <div class="grid">
+      <div class="card">
+        <div class="card-title">현재 신선도 및 에러 상태</div>
+        <div style="margin: 0.5rem 0;">
+          <span id="debug-status-badge" class="badge badge-stale">INIT</span>
+        </div>
+        <div style="font-size: 0.9rem; color: var(--text-secondary);">
+          보존된 마지막 정상값: <strong id="debug-current-value" style="color: var(--text-primary);">-</strong>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">누적 행 수 및 비교 결과</div>
+        <div style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.25rem;" id="debug-row-count">0건</div>
+        <div style="font-size: 0.9rem; color: var(--text-secondary);" id="debug-comparison-text">-</div>
+      </div>
+    </div>
+
+    <!-- 합성 Fixture 9종 실행 패널 -->
+    <div class="panel">
+      <div class="panel-title">2. 공개 합성 Fixture 9종 검사 재생 (C12 ~ C19, C20, C21)</div>
+      
+      <div style="margin-bottom: 0.5rem; font-size: 0.85rem; font-weight: 600; color: var(--text-secondary);">
+        [정상 시퀀스]: D1-A -> D1-B(같은 날짜 갱신 C20) -> D2(익일 추가 C21)
+      </div>
+      <div class="button-group">
+        <button id="fx-d1-a" class="btn btn-secondary btn-sm">D1-A 재생</button>
+        <button id="fx-d1-b" class="btn btn-secondary btn-sm">D1-B 재생 (당일 갱신)</button>
+        <button id="fx-d2" class="btn btn-secondary btn-sm">D2 재생 (+15 증감)</button>
+      </div>
+
+      <div style="margin: 1rem 0 0.5rem; font-size: 0.85rem; font-weight: 600; color: var(--text-secondary);">
+        [외부 원천 실패 5종 재생]: 마지막 정상값 보존(C17) 및 Stale 전환(C18)
+      </div>
+      <div class="button-group">
+        <button id="fx-fail-timeout" class="btn btn-warning btn-sm">① 타임아웃 (C12)</button>
+        <button id="fx-fail-auth" class="btn btn-warning btn-sm">② 401/403 거절 (C13)</button>
+        <button id="fx-fail-rate" class="btn btn-warning btn-sm">③ 호출제한 429 (C14)</button>
+        <button id="fx-fail-offline" class="btn btn-warning btn-sm">④ 오프라인 (C15)</button>
+        <button id="fx-fail-schema" class="btn btn-warning btn-sm">⑤ 스키마 변경 (C16)</button>
+      </div>
+
+      <div style="margin: 1rem 0 0.5rem; font-size: 0.85rem; font-weight: 600; color: var(--text-secondary);">
+        [복구 및 초기화]
+      </div>
+      <div class="button-group">
+        <button id="fx-recover" class="btn btn-primary btn-sm">복구 D2 재생 (fresh/none 복구 C19)</button>
+        <button id="btn-reset" class="btn btn-danger btn-sm">평가 상태 리셋</button>
+      </div>
+    </div>
+
+    <!-- 모의 장애 주입 패널 -->
+    <div class="panel">
+      <div class="panel-title">3. 클라이언트 네트워크 모의 장애 주입기 (Fault Injection)</div>
+      <p style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 0.75rem;">
+        실시간 브라우저 실행 런타임에서 특정 예외 조건을 강제 발생시켜 애플리케이션 핸들러를 검증합니다.
+      </p>
+      <div class="button-group">
+        <button id="fault-timeout" class="btn btn-secondary btn-sm">강제 타임아웃 주입</button>
+        <button id="fault-auth" class="btn btn-secondary btn-sm">강제 401 주입</button>
+        <button id="fault-rate" class="btn btn-secondary btn-sm">강제 429 주입</button>
+        <button id="fault-offline" class="btn btn-secondary btn-sm">강제 오프라인 주입</button>
+        <button id="fault-schema" class="btn btn-secondary btn-sm">강제 스키마 에러 주입</button>
+      </div>
+    </div>
+
+    <!-- 상태 JSON 인스펙터 -->
+    <div class="panel">
+      <div class="panel-title">시뮬레이션 상태 덤프 (Evaluation State)</div>
+      <pre id="debug-state-dump" class="code-box">로딩 중...</pre>
+    </div>
+
+    <footer>
+      <p>ALEPH T04 디버그 시뮬레이터 | fixture 9종 계약(v1.1.0) 완전 호환</p>
+    </footer>
+  </div>
+
+  <script type="module" src="./src/debug.js"></script>
+</body>
+</html>
