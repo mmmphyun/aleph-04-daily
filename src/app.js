@@ -1,0 +1,285 @@
+'use strict';
+
+import {
+  applyError,
+  applySuccessfulReading,
+  kstDate,
+  resetEvaluationState,
+  validateNormalizedReading
+} from './adapter.js';
+
+const HN_MAXITEM_URL = 'https://hacker-news.firebaseio.com/v0/maxitem.json';
+const SIGNAL_ID = 'hn-maxitem';
+const UNIT = 'items';
+const SOURCE_NAME = 'Hacker News (Firebase API)';
+const TIMEOUT_MS = 5000;
+
+// Application State
+let appState = resetEvaluationState();
+let rawLiveResponse = null;
+
+// DOM Elements
+const elStatusBanner = document.getElementById('status-banner');
+const elStatusBadge = document.getElementById('status-badge');
+const elStatusDesc = document.getElementById('status-desc');
+const elRetryBtn = document.getElementById('btn-retry');
+
+const elMetricValue = document.getElementById('metric-value');
+const elMetricUnit = document.getElementById('metric-unit');
+const elMetricDelta = document.getElementById('metric-delta');
+
+const elSourceObservedAt = document.getElementById('meta-source-time');
+const elFetchedAt = document.getElementById('meta-fetched-at');
+const elTimezone = document.getElementById('meta-timezone');
+const elSourceUrl = document.getElementById('meta-source-url');
+const elSourceName = document.getElementById('meta-source-name');
+
+const elHistoryTableBody = document.getElementById('history-table-body');
+const elRawJson = document.getElementById('raw-json');
+const elRefreshBtn = document.getElementById('btn-refresh');
+
+/**
+ * 초기 영속 데이터(data/history.json) 로드
+ */
+async function loadPersistedHistory() {
+  try {
+    const res = await fetch('./data/history.json');
+    if (!res.ok) {
+      console.warn('Could not load history.json (HTTP ' + res.status + ')');
+      return;
+    }
+    const items = await res.json();
+    if (Array.isArray(items)) {
+      for (const item of items) {
+        appState = applySuccessfulReading(appState, item);
+      }
+    }
+  } catch (err) {
+    console.warn('Failed to fetch persisted history:', err);
+  }
+}
+
+/**
+ * 실시간 Hacker News API 호출 및 에러 포착
+ */
+async function fetchLiveReading() {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), TIMEOUT_MS);
+  const fetchedAt = new Date().toISOString();
+
+  try {
+    if (!navigator.onLine) {
+      throw new Error('NETWORK_OFFLINE');
+    }
+
+    const response = await fetch(HN_MAXITEM_URL, {
+      signal: controller.signal,
+      headers: { 'Accept': 'application/json' }
+    });
+
+    clearTimeout(timeoutId);
+
+    if (response.status === 401 || response.status === 403) {
+      appState = applyError(appState, 'auth');
+      render();
+      return;
+    }
+    if (response.status === 429) {
+      const retryAfter = response.headers.get('retry-after');
+      appState = applyError(appState, 'rate_limit', {
+        retry_after_seconds: retryAfter ? Number(retryAfter) : null
+      });
+      render();
+      return;
+    }
+    if (!response.ok) {
+      appState = applyError(appState, 'schema_error');
+      render();
+      return;
+    }
+
+    const rawValue = await response.json();
+    rawLiveResponse = rawValue;
+
+    const normalizedValue = Number(rawValue);
+    if (!Number.isFinite(normalizedValue) || normalizedValue <= 0) {
+      appState = applyError(appState, 'schema_error');
+      render();
+      return;
+    }
+
+    const headerDate = response.headers.get('date');
+    let sourceTime = null;
+    if (headerDate) {
+      const parsed = new Date(headerDate);
+      if (!Number.isNaN(parsed.getTime())) {
+        sourceTime = parsed.toISOString();
+      }
+    }
+
+    const recordDate = kstDate(fetchedAt);
+
+    const reading = {
+      signal_id: SIGNAL_ID,
+      normalized_value: normalizedValue,
+      unit: UNIT,
+      source_name: SOURCE_NAME,
+      source_url: HN_MAXITEM_URL,
+      source_time: sourceTime,
+      fetched_at: fetchedAt,
+      record_timezone: 'Asia/Seoul',
+      record_date: recordDate
+    };
+
+    validateNormalizedReading(reading);
+    appState = applySuccessfulReading(appState, reading);
+  } catch (err) {
+    clearTimeout(timeoutId);
+    if (err.name === 'AbortError') {
+      appState = applyError(appState, 'timeout');
+    } else if (err.message === 'NETWORK_OFFLINE' || err instanceof TypeError) {
+      appState = applyError(appState, 'offline');
+    } else {
+      appState = applyError(appState, 'schema_error');
+    }
+  }
+
+  render();
+}
+
+/**
+ * UI 렌더링
+ */
+function render() {
+  const current = appState.current_reading;
+  const status = appState.status;
+
+  // 1. 상태 배너 및 에러 핸들링 (C17, C18, C19)
+  if (!status || status.freshness === 'fresh') {
+    elStatusBanner.className = 'status-banner fresh';
+    elStatusBadge.className = 'badge badge-fresh';
+    elStatusBadge.textContent = 'FRESH (정상)';
+    elStatusDesc.textContent = '외부 원천과 정상 통신 중입니다. 실시간 최신 관측값입니다.';
+    elRetryBtn.style.display = 'none';
+  } else {
+    elStatusBanner.className = 'status-banner stale';
+    elStatusBadge.className = 'badge badge-stale';
+    elStatusBadge.textContent = `STALE (${status.error_code.toUpperCase()})`;
+
+    const errorGuides = {
+      timeout: '외부 원천 응답 시간 초과(5초 제한). 마지막 정상값을 보존 중입니다.',
+      auth: '외부 원천 인증 거절(401/403). 마지막 정상값을 보존 중입니다.',
+      rate_limit: '외부 원천 호출 한도 초과(429). 잠시 후 다시 시도하십시오.',
+      offline: '네트워크 연결이 끊겼거나 원천에 접근할 수 없습니다. 오프라인 상태입니다.',
+      schema_error: '원천의 응답 형식이 예상과 다르거나 손상되었습니다.'
+    };
+    elStatusDesc.textContent = errorGuides[status.error_code] || '데이터 갱신 실패. 마지막 정상값을 유지합니다.';
+    elRetryBtn.style.display = 'inline-flex';
+  }
+
+  // 2. 메트릭 카드 (C04, C05, C17)
+  if (current) {
+    elMetricValue.textContent = Number(current.normalized_value).toLocaleString();
+    elMetricUnit.textContent = current.unit;
+
+    // 출처 시각 및 조회 시각 (C07, C08, C09)
+    elSourceObservedAt.textContent = current.source_time
+      ? formatIsoKst(current.source_time)
+      : '(응답 헤더 Date 없음 / null)';
+    elFetchedAt.textContent = formatIsoKst(current.fetched_at);
+    elTimezone.textContent = `${current.record_timezone} (KST)`;
+    elSourceName.textContent = current.source_name;
+    elSourceUrl.textContent = current.source_url;
+    elSourceUrl.href = current.source_url;
+  } else {
+    elMetricValue.textContent = '-';
+    elMetricUnit.textContent = UNIT;
+    elSourceObservedAt.textContent = '-';
+    elFetchedAt.textContent = '-';
+    elTimezone.textContent = 'Asia/Seoul';
+    elSourceName.textContent = SOURCE_NAME;
+    elSourceUrl.textContent = HN_MAXITEM_URL;
+    elSourceUrl.href = HN_MAXITEM_URL;
+  }
+
+  // 3. 어제 대비 변화값 계산 렌더링 (C24)
+  const comparison = appState.last_comparison;
+  if (comparison && comparison.state === 'comparable') {
+    const sign = comparison.direction === 'increase' ? '+' : comparison.direction === 'decrease' ? '-' : '';
+    const arrow = comparison.direction === 'increase' ? '▲' : comparison.direction === 'decrease' ? '▼' : '―';
+    const className = comparison.direction === 'increase' ? 'delta-increase' : comparison.direction === 'decrease' ? 'delta-decrease' : 'delta-neutral';
+
+    elMetricDelta.className = `metric-delta ${className}`;
+    elMetricDelta.innerHTML = `어제 대비 <strong>${arrow} ${sign}${Number(comparison.magnitude).toLocaleString()} ${comparison.unit}</strong>`;
+  } else {
+    elMetricDelta.className = 'metric-delta delta-neutral';
+    elMetricDelta.textContent = '어제 대비: 비교 대상 기록 1건 대기 중 (최소 2일 필요)';
+  }
+
+  // 4. 일별 영속 기록 테이블 렌더링 (C22, C23)
+  elHistoryTableBody.innerHTML = '';
+  for (const row of appState.daily_readings) {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><strong>${row.record_date}</strong></td>
+      <td>${Number(row.normalized_value).toLocaleString()} ${row.unit}</td>
+      <td>${formatIsoKst(row.last_fetched_at)}</td>
+      <td><a href="${row.reading.source_url}" target="_blank" rel="noopener noreferrer">${row.reading.source_name}</a></td>
+    `;
+    elHistoryTableBody.appendChild(tr);
+  }
+
+  // 5. 디버그 JSON 상태 출력
+  if (elRawJson) {
+    elRawJson.textContent = JSON.stringify(
+      {
+        status: appState.status,
+        current_reading: appState.current_reading,
+        last_comparison: appState.last_comparison,
+        raw_live_response: rawLiveResponse,
+        daily_readings_count: appState.daily_readings.length
+      },
+      null,
+      2
+    );
+  }
+}
+
+function formatIsoKst(isoString) {
+  if (!isoString) return '-';
+  try {
+    const d = new Date(isoString);
+    if (Number.isNaN(d.getTime())) return isoString;
+    return d.toLocaleString('ko-KR', {
+      timeZone: 'Asia/Seoul',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false
+    }) + ' KST';
+  } catch {
+    return isoString;
+  }
+}
+
+// Event Listeners
+elRefreshBtn.addEventListener('click', () => {
+  fetchLiveReading();
+});
+
+elRetryBtn.addEventListener('click', () => {
+  fetchLiveReading();
+});
+
+// App Bootstrap
+async function bootstrap() {
+  await loadPersistedHistory();
+  render();
+  // 실시간 데이터 조회
+  await fetchLiveReading();
+}
+
+bootstrap();

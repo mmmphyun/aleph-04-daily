@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>오늘의 진짜 정보판 — Hacker News Daily Indicator</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="header-title">
+        <h1>오늘의 진짜 정보판</h1>
+        <p>Hacker News 실시간 누적 생성 아이템 지표 (T04)</p>
+      </div>
+      <div class="nav-links">
+        <button id="btn-refresh" class="btn btn-primary">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+          실시간 조회
+        </button>
+        <a href="./debug.html" class="btn btn-secondary">
+          디버그 시뮬레이션
+        </a>
+      </div>
+    </header>
+
+    <!-- 상태 및 신선도 배너 (C17, C18, C19) -->
+    <div id="status-banner" class="status-banner fresh">
+      <div class="status-content">
+        <div class="status-badge-row">
+          <span id="status-badge" class="badge badge-fresh">FRESH</span>
+          <span id="status-desc" class="status-desc">외부 원천과 정상 통신 중입니다.</span>
+        </div>
+      </div>
+      <button id="btn-retry" class="btn btn-warning btn-sm" style="display: none;">
+        다시 시도
+      </button>
+    </div>
+
+    <!-- 핵심 지표 카드 그리드 (C04, C05, C24) -->
+    <div class="grid">
+      <div class="card">
+        <div class="card-title">오늘의 관측값 (C04, C05)</div>
+        <div class="metric-value-container">
+          <span id="metric-value" class="metric-number">-</span>
+          <span id="metric-unit" class="metric-unit">items</span>
+        </div>
+        <div id="metric-delta" class="metric-delta delta-neutral">
+          어제 대비 계산 중...
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">관측 메타데이터 (C06, C07, C08, C09)</div>
+        <table class="meta-table">
+          <tbody>
+            <tr>
+              <th>출처 (Source)</th>
+              <td><a id="meta-source-url" href="https://hacker-news.firebaseio.com/v0/maxitem.json" target="_blank" rel="noopener noreferrer"><span id="meta-source-name">Hacker News (Firebase API)</span></a></td>
+            </tr>
+            <tr>
+              <th>출처 관측 시각</th>
+              <td id="meta-source-time">-</td>
+            </tr>
+            <tr>
+              <th>조회 시각</th>
+              <td id="meta-fetched-at">-</td>
+            </tr>
+            <tr>
+              <th>기준 시간대</th>
+              <td id="meta-timezone">Asia/Seoul (KST)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- KST 일별 보존 기록 테이블 (C22, C23, C24) -->
+    <h2 class="section-title">일별 보존 기록 (서로 다른 실제 2일)</h2>
+    <div class="history-table-container">
+      <table class="history-table">
+        <thead>
+          <tr>
+            <th>기준 날짜 (KST)</th>
+            <th>보존된 값 및 단위</th>
+            <th>최종 관측/조회 시각</th>
+            <th>데이터 원천</th>
+          </tr>
+        </thead>
+        <tbody id="history-table-body">
+          <tr>
+            <td colspan="4" style="text-align: center; color: var(--text-muted);">기록을 불러오는 중...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 원자료 대조 인스펙터 (C10) -->
+    <div class="panel">
+      <div class="panel-title">정상 건 원자료·저장값·화면값 일치 대조 (C10)</div>
+      <pre id="raw-json" class="code-box">로딩 중...</pre>
+    </div>
+
+    <footer>
+      <p>ALEPH T04 · 오늘의 진짜 정보판 — 데이터가 안 올 때 | 계정/로그인 없는 공개 심사 화면</p>
+    </footer>
+  </div>
+
+  <script type="module" src="./src/app.js"></script>
+</body>
+</html>
