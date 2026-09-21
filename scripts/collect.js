@@ -84,6 +84,17 @@ async function collect() {
     history.push(reading);
   }
 
+  // Retention Policy: 최근 30일 데이터만 유지 (오래된 과거 데이터 자동 만료)
+  const RETENTION_DAYS = 30;
+  const cutoff = new Date();
+  cutoff.setDate(cutoff.getDate() - RETENTION_DAYS);
+  const cutoffDateStr = cutoff.toISOString().slice(0, 10);
+  const initialLength = history.length;
+  history = history.filter((item) => item.record_date >= cutoffDateStr);
+  if (history.length < initialLength) {
+    console.log(`[collect] Pruned ${initialLength - history.length} expired records older than ${cutoffDateStr}`);
+  }
+
   // Sort by record_date ascending
   history.sort((a, b) => a.record_date.localeCompare(b.record_date));
 
