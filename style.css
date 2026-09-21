@@ -310,6 +310,72 @@ header {
   color: var(--text-primary);
 }
 
+/* Top Stories List */
+.top-stories-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.top-story-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 0.85rem 1rem;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  transition: border-color 0.15s, transform 0.15s;
+}
+
+.top-story-item:hover {
+  border-color: var(--accent-primary);
+  transform: translateY(-1px);
+}
+
+.story-rank {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--accent-primary);
+  font-family: var(--font-mono);
+  min-width: 1.75rem;
+  text-align: center;
+  padding-top: 0.1rem;
+}
+
+.story-content {
+  flex: 1;
+}
+
+.story-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  text-decoration: none;
+  line-height: 1.4;
+  display: inline-block;
+  margin-bottom: 0.35rem;
+}
+
+.story-title:hover {
+  color: var(--accent-primary);
+}
+
+.story-meta {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.story-meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
 .history-table-container {
   overflow-x: auto;
   border: 1px solid var(--border-color);

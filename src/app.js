@@ -37,6 +37,7 @@ const elSourceName = document.getElementById('meta-source-name');
 const elHistoryTableBody = document.getElementById('history-table-body');
 const elRawJson = document.getElementById('raw-json');
 const elRefreshBtn = document.getElementById('btn-refresh');
+const elTopStoriesList = document.getElementById('top-stories-list');
 
 /**
  * 초기 영속 데이터(data/history.json) 로드
@@ -265,21 +266,73 @@ function formatIsoKst(isoString) {
   }
 }
 
+/**
+ * 실시간 Hacker News Top 5 인기 기사 로드 (보조 피드, 실패 시 격리)
+ */
+async function fetchTopStories() {
+  if (!elTopStoriesList) return;
+  try {
+    const res = await fetch('https://hacker-news.firebaseio.com/v0/topstories.json');
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const ids = await res.json();
+    const top5Ids = Array.isArray(ids) ? ids.slice(0, 5) : [];
+
+    const storyPromises = top5Ids.map(async (id) => {
+      const itemRes = await fetch(`https://hacker-news.firebaseio.com/v0/item/${id}.json`);
+      if (!itemRes.ok) return null;
+      return itemRes.json();
+    });
+
+    const stories = (await Promise.all(storyPromises)).filter(Boolean);
+
+    elTopStoriesList.innerHTML = '';
+    stories.forEach((story, idx) => {
+      const li = document.createElement('li');
+      li.className = 'top-story-item';
+      const storyUrl = story.url || `https://news.ycombinator.com/item?id=${story.id}`;
+      const score = story.score ?? 0;
+      const by = story.by ?? 'anonymous';
+      const comments = story.descendants ?? 0;
+
+      li.innerHTML = `
+        <span class="story-rank">${idx + 1}</span>
+        <div class="story-content">
+          <a class="story-title" href="${storyUrl}" target="_blank" rel="noopener noreferrer">${story.title}</a>
+          <div class="story-meta">
+            <span>★ ${score} points</span>
+            <span>by ${by}</span>
+            <span>💬 ${comments} comments</span>
+          </div>
+        </div>
+      `;
+      elTopStoriesList.appendChild(li);
+    });
+  } catch (err) {
+    console.warn('Failed to fetch top stories (non-blocking):', err.message);
+    elTopStoriesList.innerHTML = `<li style="color: var(--text-muted); font-size: 0.85rem;">인기 기사를 불러오지 못했습니다 (${err.message}). 메인 지표는 정상 동작 중입니다.</li>`;
+  }
+}
+
 // Event Listeners
 elRefreshBtn.addEventListener('click', () => {
   fetchLiveReading();
+  fetchTopStories();
 });
 
 elRetryBtn.addEventListener('click', () => {
   fetchLiveReading();
+  fetchTopStories();
 });
 
 // App Bootstrap
 async function bootstrap() {
   await loadPersistedHistory();
   render();
-  // 실시간 데이터 조회
-  await fetchLiveReading();
+  // 실시간 데이터 조회 및 Top 5 로드
+  await Promise.allSettled([
+    fetchLiveReading(),
+    fetchTopStories()
+  ]);
 }
 
 bootstrap();
