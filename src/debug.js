@@ -28,27 +28,28 @@ function updateView() {
   const status = debugState.status;
   if (!status) {
     elCurrentStatusBadge.className = 'stamp stamp-stale';
-    elCurrentStatusBadge.textContent = 'INIT (초기 미설정)';
+    elCurrentStatusBadge.textContent = '초기 상태';
   } else if (status.freshness === 'fresh') {
     elCurrentStatusBadge.className = 'stamp stamp-fresh';
-    elCurrentStatusBadge.textContent = `FRESH (${status.error_code})`;
+    elCurrentStatusBadge.textContent = '정상 (FRESH)';
   } else {
     elCurrentStatusBadge.className = 'stamp stamp-stale';
-    elCurrentStatusBadge.textContent = `STALE (${status.error_code})`;
+    elCurrentStatusBadge.textContent = `오래된 값 (${status.error_code.toUpperCase()})`;
   }
 
   if (debugState.current_reading) {
     elCurrentReadingValue.textContent = `${Number(debugState.current_reading.normalized_value).toLocaleString()} ${debugState.current_reading.unit}`;
   } else {
-    elCurrentReadingValue.textContent = 'null (보존된 값 없음)';
+    elCurrentReadingValue.textContent = '보존된 값 없음';
   }
 
   const comp = debugState.last_comparison;
   if (comp && comp.state === 'comparable') {
     const arrow = comp.direction === 'increase' ? '▲' : comp.direction === 'decrease' ? '▼' : '―';
-    elComparisonText.textContent = `${arrow} ${comp.direction} ${comp.magnitude} ${comp.unit}`;
+    const dirText = comp.direction === 'increase' ? '증가' : comp.direction === 'decrease' ? '감소' : '변화 없음';
+    elComparisonText.textContent = `${arrow} 전일 대비 ${comp.magnitude} ${comp.unit} ${dirText}`;
   } else if (comp) {
-    elComparisonText.textContent = `상태: ${comp.state}`;
+    elComparisonText.textContent = `비교 상태: ${comp.state === 'insufficient' ? '비교 대상 기록 부족' : comp.state}`;
   } else {
     elComparisonText.textContent = '-';
   }
@@ -62,12 +63,12 @@ function updateView() {
 async function triggerFixture(fixtureFilename) {
   try {
     const res = await fetch(FIXTURES_BASE + fixtureFilename);
-    if (!res.ok) throw new Error(`HTTP ${res.status} loading fixture ${fixtureFilename}`);
+    if (!res.ok) throw new Error(`HTTP ${res.status} 시험 파일 로드 실패`);
     const fixture = await res.json();
     debugState = runFixture(debugState, fixture);
     updateView();
   } catch (err) {
-    alert(`Fixture 로드 실패: ${err.message}`);
+    alert(`시험 파일 로드 실패: ${err.message}`);
   }
 }
 
@@ -75,7 +76,7 @@ async function triggerFixture(fixtureFilename) {
  * 실제 Hacker News API 진단 및 Ping
  */
 async function runLivePing() {
-  elPingResult.textContent = 'Hacker News API로 Ping 전송 중...';
+  elPingResult.textContent = 'Hacker News 엔드포인트로 연결을 확인하고 있습니다...';
   const start = performance.now();
 
   try {
@@ -86,7 +87,7 @@ async function runLivePing() {
     const ok = res.ok;
 
     if (!ok) {
-      elPingResult.textContent = `[PING 실패] HTTP ${status}\nRTT: ${rtt}ms\nDate: ${dateHeader}`;
+      elPingResult.textContent = `[연결 실패] HTTP ${status}\n왕복 지연시간: ${rtt}ms\nDate 헤더: ${dateHeader}`;
       return;
     }
 
@@ -94,16 +95,16 @@ async function runLivePing() {
     const isNum = typeof val === 'number' && Number.isFinite(val);
 
     elPingResult.textContent = [
-      `[PING 성공] HTTP ${status} OK`,
-      `왕복 지연시간(RTT): ${rtt} ms`,
-      `응답 Date 헤더: ${dateHeader || '(헤더 없음)'}`,
+      `[연결 성공] HTTP ${status} OK`,
+      `왕복 지연시간: ${rtt} ms`,
+      `응답 Date 헤더: ${dateHeader || '(헤더 시각 없음)'}`,
       `수신된 원자료(maxitem): ${val}`,
-      `타입 및 유효성: ${isNum ? '정상 정수 (Finite Number)' : '유효하지 않은 값'}`,
-      `KST 변환 일자: ${kstDate(new Date().toISOString())}`
+      `값 유효성: ${isNum ? '정상 수치' : '유효하지 않은 값'}`,
+      `기준 일자(KST): ${kstDate(new Date().toISOString())}`
     ].join('\n');
   } catch (err) {
     const rtt = (performance.now() - start).toFixed(1);
-    elPingResult.textContent = `[PING 에러] ${err.name}: ${err.message}\n소요 시간: ${rtt} ms`;
+    elPingResult.textContent = `[연결 오류] ${err.name}: ${err.message}\n소요 시간: ${rtt} ms`;
   }
 }
 

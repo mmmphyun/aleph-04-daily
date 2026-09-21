@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>The Daily Hacker Gazette — 오늘의 진짜 정보판</title>
+  <title>The Daily Hacker — 오늘의 진짜 정보판</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400;1,700&display=swap" rel="stylesheet">
@@ -11,68 +11,68 @@
 </head>
 <body>
   <div class="container">
-    <!-- 신문 마스트헤드 (Masthead) -->
+    <!-- 상단 마스트헤드 -->
     <header class="masthead">
       <div class="masthead-meta-top">
-        <span>Vol. IV · No. 21</span>
-        <span>Asia/Seoul Edition (KST)</span>
-        <span>Daily Dispatch</span>
+        <span>발행 제4권 · 제21호</span>
+        <span>서울 기준 시간대 (KST)</span>
+        <span>일일 관측판</span>
       </div>
 
       <div class="masthead-title-wrap">
-        <div class="masthead-motto">"All the Telemetry That's Fit to Pull"</div>
+        <div class="masthead-motto">데이터가 오지 않을 때도 정직하게 기록합니다</div>
         <h1 class="masthead-title">The Daily Hacker</h1>
-        <div class="masthead-sub">오늘의 진짜 정보판 — 데이터가 안 올 때 (과제 T04)</div>
+        <div class="masthead-sub">오늘의 진짜 정보판 — 데이터가 안 올 때</div>
       </div>
 
       <div class="masthead-bar-bottom">
-        <div>단일 관측 지표: <strong>Hacker News 누적 생성 아이템(maxitem)</strong></div>
+        <div>관측 지표: <strong>Hacker News 누적 생성 아이템 번호</strong></div>
         <div class="nav-links">
           <button id="btn-refresh" class="btn btn-primary btn-sm">
-            최신 전보 타전 (조회)
+            최신 데이터 조회
           </button>
           <a href="./debug.html" class="btn btn-sm">
-            통신 장애 시뮬레이터
+            장애 시험 화면
           </a>
         </div>
       </div>
     </header>
 
-    <!-- 활판 인쇄 상태 스탬프 배너 (C17, C18, C19) -->
+    <!-- 상태 스탬프 배너 (C17, C18, C19) -->
     <div id="status-banner" class="status-banner fresh">
       <div class="status-content">
         <span id="status-badge" class="stamp stamp-fresh">FRESH</span>
-        <span id="status-desc" class="status-desc">원천 통신 회선 정상. 실시간 최신 관측 전보입니다.</span>
+        <span id="status-desc" class="status-desc">외부 원천과 정상 통신 중입니다. 실시간 최신 관측값입니다.</span>
       </div>
       <button id="btn-retry" class="btn btn-sm" style="display: none;">
-        전보 재타전 (다시 시도)
+        다시 시도
       </button>
     </div>
 
-    <!-- 신문 2열 칼럼 그리드 (C04, C05, C06, C07, C08, C09, C24) -->
+    <!-- 2열 정보 그리드 (C04, C05, C06, C07, C08, C09, C24) -->
     <div class="broadsheet-grid">
-      <!-- 1열: 주간 관측 수치 헤드라인 -->
+      <!-- 1열: 주간 관측 수치 -->
       <div class="column">
-        <div class="column-header">Ⅰ. 오늘의 관측값 (Official Reading)</div>
+        <div class="column-header">Ⅰ. 오늘의 관측값</div>
         <div class="metric-box">
-          <div class="metric-eyebrow">Cumulative Submissions Recorded</div>
+          <div class="metric-eyebrow">누적 등록 아이템 건수</div>
           <div class="metric-value-container">
             <span id="metric-value" class="metric-number">-</span>
             <span id="metric-unit" class="metric-unit">items</span>
           </div>
           <div id="metric-delta" class="metric-delta delta-neutral">
-            어제 대비 계산 중...
+            어제 대비 변화량을 계산하고 있습니다.
           </div>
         </div>
       </div>
 
-      <!-- 2열: 전보 발신처 및 관측 시각 메타데이터 -->
+      <!-- 2열: 관측 상세 메타데이터 -->
       <div class="column">
-        <div class="column-header">Ⅱ. 관측 메타데이터 (Dispatch Disclosure)</div>
+        <div class="column-header">Ⅱ. 관측 상세 정보</div>
         <table class="meta-table">
           <tbody>
             <tr>
-              <th>발신처 (Source)</th>
+              <th>데이터 출처</th>
               <td><a id="meta-source-url" href="https://hacker-news.firebaseio.com/v0/maxitem.json" target="_blank" rel="noopener noreferrer"><span id="meta-source-name">Hacker News (Firebase API)</span></a></td>
             </tr>
             <tr>
@@ -80,7 +80,7 @@
               <td id="meta-source-time">-</td>
             </tr>
             <tr>
-              <th>기록 타전 시각</th>
+              <th>화면 조회 시각</th>
               <td id="meta-fetched-at">-</td>
             </tr>
             <tr>
@@ -92,10 +92,10 @@
       </div>
     </div>
 
-    <!-- KST 일별 보존 기록 장부 (C22, C23, C24) -->
+    <!-- 일별 보존 기록 (C22, C23, C24) -->
     <div class="section-head">
-      <h2 class="section-title">일별 보존 장부 (Two-Day Historical Ledger)</h2>
-      <span class="section-sub">서로 다른 Asia/Seoul 실제 2일간의 보존 기록</span>
+      <h2 class="section-title">일별 보존 기록</h2>
+      <span class="section-sub">서로 다른 실제 날짜 2건의 기록 대조</span>
     </div>
     <div class="history-table-container">
       <table class="history-table">
@@ -103,36 +103,36 @@
           <tr>
             <th>기준 일자 (KST)</th>
             <th>보존된 관측값 및 단위</th>
-            <th>최종 관측 타전 시각</th>
+            <th>최종 관측 조회 시각</th>
             <th>데이터 원천</th>
           </tr>
         </thead>
         <tbody id="history-table-body">
           <tr>
-            <td colspan="4" style="text-align: center; color: var(--ink-muted);">장부 기록을 불러오는 중...</td>
+            <td colspan="4" style="text-align: center; color: var(--ink-muted);">기록을 불러오는 중입니다.</td>
           </tr>
         </tbody>
       </table>
     </div>
 
-    <!-- 실시간 Hacker News Top 5 인기 기사 칼럼 (보조 위젯) -->
+    <!-- 실시간 인기 기사 5선 (보조 위젯) -->
     <div class="section-head">
-      <h2 class="section-title">실시간 호외 기사 (Front-Page Top 5 Stories)</h2>
-      <span class="section-sub">전송망 최신 타전 헤드라인</span>
+      <h2 class="section-title">실시간 인기 기사 5선</h2>
+      <span class="section-sub">Hacker News 주요 헤드라인</span>
     </div>
     <ul id="top-stories-list" class="top-stories-list">
-      <li style="padding: 1rem; color: var(--ink-muted); font-size: 0.85rem;">실시간 인기 기사를 불러오는 중...</li>
+      <li style="padding: 1rem; color: var(--ink-muted); font-size: 0.85rem;">실시간 인기 기사를 불러오는 중입니다.</li>
     </ul>
 
     <!-- 원자료 대조 인스펙터 (C10) -->
     <div class="panel">
-      <div class="panel-title">원자료·저장값·화면값 일치 대조 인스펙터 (C10)</div>
-      <pre id="raw-json" class="code-box">로딩 중...</pre>
+      <div class="panel-title">원자료·저장값·화면값 대조</div>
+      <pre id="raw-json" class="code-box">불러오는 중입니다.</pre>
     </div>
 
     <footer>
-      <p>THE DAILY HACKER GAZETTE · ALEPH T04 SPECIFICATION COMPLIANT</p>
-      <p style="margin-top: 0.35rem; color: var(--ink-muted);">무로그인·무인증 공개 심사 화면 | 마지막 정상값 영속 보존 및 정직한 상태 보고 원칙 준수</p>
+      <p>The Daily Hacker · 오늘의 진짜 정보판</p>
+      <p style="margin-top: 0.35rem; color: var(--ink-muted);">계정 생성과 로그인 없이 열람 가능한 공개 심사 화면 | 마지막 정상값 보존 및 장애 상태 정직 안내</p>
     </footer>
   </div>
 

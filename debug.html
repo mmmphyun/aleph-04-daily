@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>통신 장애 시뮬레이터 & 진단 — The Daily Hacker</title>
+  <title>장애 시험 및 진단 — The Daily Hacker</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400;1,700&display=swap" rel="stylesheet">
@@ -11,24 +11,24 @@
 </head>
 <body>
   <div class="container">
-    <!-- 신문 서브 마스트헤드 -->
+    <!-- 상단 안내 -->
     <header class="masthead">
       <div class="masthead-meta-top">
-        <span>Diagnostic Laboratory & Replay Station</span>
-        <span>Spec: Public Contract v2.0</span>
-        <span>Testing Ground</span>
+        <span>과제 T04 검사 시험실</span>
+        <span>공개 계약 규격 준수</span>
+        <span>합성 데이터 검증실</span>
       </div>
 
       <div class="masthead-title-wrap">
-        <h1 class="masthead-title" style="font-size: 2.4rem;">전송 장애 시뮬레이터</h1>
-        <div class="masthead-sub">5종 장애 합성 재생 · 마지막 정상값 보존 · 복구 검증 (카드 3)</div>
+        <h1 class="masthead-title" style="font-size: 2.4rem;">장애 시험 및 진단</h1>
+        <div class="masthead-sub">실패 5종 재생과 복구 검증</div>
       </div>
 
       <div class="masthead-bar-bottom">
-        <div>결정론적 상태 전이 및 회선 장애 모의 시험실</div>
+        <div>상태 전이 및 통신 장애 모의 시험실</div>
         <div class="nav-links">
           <a href="./index.html" class="btn btn-primary btn-sm">
-            메인 정보판으로 복귀
+            메인 정보판으로 이동
           </a>
         </div>
       </div>
@@ -36,20 +36,20 @@
 
     <!-- 실시간 API 진단 패널 -->
     <div class="panel">
-      <div class="panel-title">1. 실시간 Hacker News API 전보 핑 (Live Connectivity)</div>
+      <div class="panel-title">1. 실시간 API 연결 진단</div>
       <p style="color: var(--ink-secondary); font-size: 0.85rem; margin-bottom: 0.75rem;">
-        Hacker News Firebase 엔드포인트(<code>https://hacker-news.firebaseio.com/v0/maxitem.json</code>)에 직접 연결하여 왕복 지연시간(RTT), Date 헤더, 원자료 유효성을 진단합니다.
+        Hacker News Firebase 엔드포인트에 직접 연결하여 왕복 지연시간, 헤더 시각, 수신 값의 유효성을 진단합니다.
       </p>
       <button id="btn-ping" class="btn btn-sm" style="margin-bottom: 0.75rem;">
-        실시간 전보 핑(Ping) 전송
+        연결 테스트 실행
       </button>
-      <pre id="ping-result" class="code-box">[실시간 전보 핑 전송 버튼을 누르면 진단 결과가 출력됩니다]</pre>
+      <pre id="ping-result" class="code-box">[연결 테스트 실행 버튼을 누르면 진단 결과가 표시됩니다]</pre>
     </div>
 
-    <!-- 현재 시뮬레이션 상태 요약 (2열 그리드) -->
+    <!-- 현재 시뮬레이션 상태 요약 -->
     <div class="broadsheet-grid" style="margin-bottom: 2rem;">
       <div class="column">
-        <div class="column-header">현재 회선 상태 및 신선도</div>
+        <div class="column-header">현재 통신 상태</div>
         <div class="metric-box">
           <div style="margin-bottom: 0.75rem;">
             <span id="debug-status-badge" class="stamp stamp-stale">INIT</span>
@@ -61,7 +61,7 @@
       </div>
 
       <div class="column">
-        <div class="column-header">누적 장부 건수 및 비교 결과</div>
+        <div class="column-header">누적 기록 건수 및 비교 결과</div>
         <div class="metric-box">
           <div style="font-size: 1.5rem; font-weight: 800; font-family: var(--font-mono); color: var(--ink-headline); margin-bottom: 0.5rem;" id="debug-row-count">0건</div>
           <div style="font-size: 0.85rem; color: var(--ink-muted); font-family: var(--font-mono);" id="debug-comparison-text">-</div>
@@ -69,62 +69,62 @@
       </div>
     </div>
 
-    <!-- 합성 Fixture 9종 실행 패널 -->
+    <!-- 합성 시험값 9종 실행 패널 -->
     <div class="panel">
-      <div class="panel-title">2. 공개 합성 Fixture 9종 검사 재생 (C12 ~ C19, C20, C21)</div>
+      <div class="panel-title">2. 합성 시험값 재생</div>
       
       <div style="margin-bottom: 0.5rem; font-size: 0.8rem; font-family: var(--font-mono); font-weight: 700; color: var(--ink-secondary);">
-        [정상 시퀀스]: D1-A -> D1-B(같은 날짜 갱신 C20) -> D2(익일 추가 C21)
+        [정상 순서] 1일차 첫 조회 → 1일차 재조회(당일 갱신) → 2일차 조회
       </div>
       <div class="button-group">
-        <button id="fx-d1-a" class="btn btn-sm">D1-A 재생</button>
-        <button id="fx-d1-b" class="btn btn-sm">D1-B 재생 (당일 갱신)</button>
-        <button id="fx-d2" class="btn btn-sm">D2 재생 (+15 증감)</button>
+        <button id="fx-d1-a" class="btn btn-sm">1일차 첫 조회</button>
+        <button id="fx-d1-b" class="btn btn-sm">1일차 재조회 (당일 갱신)</button>
+        <button id="fx-d2" class="btn btn-sm">2일차 조회 (15 증가)</button>
       </div>
 
       <div style="margin: 1.25rem 0 0.5rem; font-size: 0.8rem; font-family: var(--font-mono); font-weight: 700; color: var(--stamp-red);">
-        [외부 원천 실패 5종 재생]: 마지막 정상값 보존(C17) 및 STALE 전환(C18)
+        [외부 실패 5종 재생] 마지막 정상값 보존 및 오래된 값 표시
       </div>
       <div class="button-group">
-        <button id="fx-fail-timeout" class="btn btn-sm">① 타임아웃 (C12)</button>
-        <button id="fx-fail-auth" class="btn btn-sm">② 401/403 거절 (C13)</button>
-        <button id="fx-fail-rate" class="btn btn-sm">③ 호출제한 429 (C14)</button>
-        <button id="fx-fail-offline" class="btn btn-sm">④ 오프라인 (C15)</button>
-        <button id="fx-fail-schema" class="btn btn-sm">⑤ 스키마 변경 (C16)</button>
+        <button id="fx-fail-timeout" class="btn btn-sm">① 응답 지연</button>
+        <button id="fx-fail-auth" class="btn btn-sm">② 인증 거절</button>
+        <button id="fx-fail-rate" class="btn btn-sm">③ 호출 한도 초과</button>
+        <button id="fx-fail-offline" class="btn btn-sm">④ 네트워크 단절</button>
+        <button id="fx-fail-schema" class="btn btn-sm">⑤ 형식 오류</button>
       </div>
 
       <div style="margin: 1.25rem 0 0.5rem; font-size: 0.8rem; font-family: var(--font-mono); font-weight: 700; color: var(--stamp-green);">
         [복구 및 초기화]
       </div>
       <div class="button-group">
-        <button id="fx-recover" class="btn btn-primary btn-sm">복구 D2 재생 (FRESH/none 복구 C19)</button>
-        <button id="btn-reset" class="btn btn-sm" style="border-color: var(--stamp-red); color: var(--stamp-red);">시험 상태 완전 리셋</button>
+        <button id="fx-recover" class="btn btn-primary btn-sm">정상 복구 (2일차)</button>
+        <button id="btn-reset" class="btn btn-sm" style="border-color: var(--stamp-red); color: var(--stamp-red);">시험 상태 초기화</button>
       </div>
     </div>
 
     <!-- 모의 장애 주입 패널 -->
     <div class="panel">
-      <div class="panel-title">3. 클라이언트 네트워크 모의 장애 주입기 (Fault Injection)</div>
+      <div class="panel-title">3. 네트워크 모의 장애 주입</div>
       <p style="color: var(--ink-secondary); font-size: 0.85rem; margin-bottom: 0.75rem;">
-        실시간 브라우저 실행 런타임에서 특정 예외 조건을 강제 발생시켜 애플리케이션 에러 분류기를 검증합니다.
+        브라우저 실행 환경에서 특정 장애 상황을 직접 일으켜 에러 처리 동작을 확인합니다.
       </p>
       <div class="button-group">
-        <button id="fault-timeout" class="btn btn-sm">강제 타임아웃 주입</button>
-        <button id="fault-auth" class="btn btn-sm">강제 401 주입</button>
-        <button id="fault-rate" class="btn btn-sm">강제 429 주입</button>
-        <button id="fault-offline" class="btn btn-sm">강제 오프라인 주입</button>
-        <button id="fault-schema" class="btn btn-sm">강제 스키마 에러 주입</button>
+        <button id="fault-timeout" class="btn btn-sm">응답 지연 유발</button>
+        <button id="fault-auth" class="btn btn-sm">인증 거절 유발</button>
+        <button id="fault-rate" class="btn btn-sm">호출 한도 초과 유발</button>
+        <button id="fault-offline" class="btn btn-sm">네트워크 단절 유발</button>
+        <button id="fault-schema" class="btn btn-sm">형식 오류 유발</button>
       </div>
     </div>
 
     <!-- 상태 JSON 인스펙터 -->
     <div class="panel">
-      <div class="panel-title">실시간 시뮬레이션 상태 덤프 (Evaluation State)</div>
-      <pre id="debug-state-dump" class="code-box">로딩 중...</pre>
+      <div class="panel-title">시뮬레이션 상태 확인</div>
+      <pre id="debug-state-dump" class="code-box">불러오는 중입니다.</pre>
     </div>
 
     <footer>
-      <p>THE DAILY HACKER · ALEPH T04 DIAGNOSTIC SUITE (v1.1.0 COMPLIANT)</p>
+      <p>The Daily Hacker · 과제 T04 검사 도구</p>
     </footer>
   </div>
 

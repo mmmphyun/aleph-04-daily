@@ -159,22 +159,22 @@ function render() {
   if (!status || status.freshness === 'fresh') {
     elStatusBanner.className = 'status-banner fresh';
     elStatusBadge.className = 'stamp stamp-fresh';
-    elStatusBadge.textContent = 'FRESH (정상)';
-    elStatusDesc.textContent = '외부 원천 통신 회선 정상. 실시간 최신 관측 전보입니다.';
+    elStatusBadge.textContent = '정상 (FRESH)';
+    elStatusDesc.textContent = '외부 원천과 정상 통신 중입니다. 실시간 최신 관측값입니다.';
     elRetryBtn.style.display = 'none';
   } else {
     elStatusBanner.className = 'status-banner stale';
     elStatusBadge.className = 'stamp stamp-stale';
-    elStatusBadge.textContent = `STALE (${status.error_code.toUpperCase()})`;
+    elStatusBadge.textContent = `오래된 값 (${status.error_code.toUpperCase()})`;
 
     const errorGuides = {
-      timeout: '외부 원천 응답 시간 초과(5초 제한). 마지막 정상값을 보존 중입니다.',
-      auth: '외부 원천 인증 거절(401/403). 마지막 정상값을 보존 중입니다.',
-      rate_limit: '외부 원천 호출 한도 초과(429). 잠시 후 다시 시도하십시오.',
-      offline: '네트워크 연결이 끊겼거나 원천에 접근할 수 없습니다. 오프라인 상태입니다.',
-      schema_error: '원천의 응답 형식이 예상과 다르거나 손상되었습니다.'
+      timeout: '외부 원천 응답 시간이 초과되었습니다. 마지막 정상값을 보존합니다.',
+      auth: '외부 원천 인증에 실패했습니다. 마지막 정상값을 보존합니다.',
+      rate_limit: '외부 원천 호출 한도를 초과했습니다. 잠시 후 다시 시도해 주세요.',
+      offline: '네트워크 연결이 끊겼습니다. 마지막 정상값을 보존합니다.',
+      schema_error: '원천 응답 형식이 올바르지 않습니다. 마지막 정상값을 보존합니다.'
     };
-    elStatusDesc.textContent = errorGuides[status.error_code] || '데이터 갱신 실패. 마지막 정상값을 유지합니다.';
+    elStatusDesc.textContent = errorGuides[status.error_code] || '데이터 갱신에 실패했습니다. 마지막 정상값을 유지합니다.';
     elRetryBtn.style.display = 'inline-flex';
   }
 
@@ -186,7 +186,7 @@ function render() {
     // 출처 시각 및 조회 시각 (C07, C08, C09)
     elSourceObservedAt.textContent = current.source_time
       ? formatIsoKst(current.source_time)
-      : '(응답 헤더 Date 없음 / null)';
+      : '(응답 헤더에 시각 정보 없음)';
     elFetchedAt.textContent = formatIsoKst(current.fetched_at);
     elTimezone.textContent = `${current.record_timezone} (KST)`;
     elSourceName.textContent = current.source_name;
@@ -197,7 +197,7 @@ function render() {
     elMetricUnit.textContent = UNIT;
     elSourceObservedAt.textContent = '-';
     elFetchedAt.textContent = '-';
-    elTimezone.textContent = 'Asia/Seoul';
+    elTimezone.textContent = 'Asia/Seoul (KST)';
     elSourceName.textContent = SOURCE_NAME;
     elSourceUrl.textContent = HN_MAXITEM_URL;
     elSourceUrl.href = HN_MAXITEM_URL;
@@ -214,7 +214,7 @@ function render() {
     elMetricDelta.innerHTML = `어제 대비 <strong>${arrow} ${sign}${Number(comparison.magnitude).toLocaleString()} ${comparison.unit}</strong>`;
   } else {
     elMetricDelta.className = 'metric-delta delta-neutral';
-    elMetricDelta.textContent = '어제 대비: 비교 대상 기록 1건 대기 중 (최소 2일 필요)';
+    elMetricDelta.textContent = '어제 대비 변화량: 비교할 전일 기록이 필요합니다 (최소 2일치 필요)';
   }
 
   // 4. 일별 영속 기록 테이블 렌더링 (C22, C23)
