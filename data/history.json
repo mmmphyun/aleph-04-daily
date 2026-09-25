@@ -64,5 +64,16 @@
     "fetched_at": "2026-09-24T18:45:44.106Z",
     "record_timezone": "Asia/Seoul",
     "record_date": "2026-09-25"
+  },
+  {
+    "signal_id": "hn-maxitem",
+    "normalized_value": 49848564,
+    "unit": "items",
+    "source_name": "Hacker News (Firebase API)",
+    "source_url": "https://hacker-news.firebaseio.com/v0/maxitem.json",
+    "source_time": "2026-09-25T19:03:14.000Z",
+    "fetched_at": "2026-09-25T19:03:14.384Z",
+    "record_timezone": "Asia/Seoul",
+    "record_date": "2026-09-26"
   }
 ]
