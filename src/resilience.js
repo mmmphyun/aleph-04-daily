@@ -50,9 +50,17 @@ export class CircuitBreaker {
     }
 
     if (this.state === 'HALF_OPEN') {
-      // AI A 작업 범위: 쿨다운 경과 후 HALF_OPEN 전이 및 단일 탐침 요청 실행까지만 담당 (TEST-05 통과)
-      // TEST-06(성공 시 CLOSED 복구) 및 TEST-07(실패 시 OPEN 재전이)은 AI B 작업 범위로 의도적 미처리
-      return await fn();
+      try {
+        const result = await fn();
+        this.state = 'CLOSED';
+        this.failureCount = 0;
+        this.lastStateChange = Date.now();
+        return result;
+      } catch (err) {
+        this.state = 'OPEN';
+        this.lastStateChange = Date.now();
+        throw err;
+      }
     }
 
     // CLOSED 상태 실행 및 연속 실패 카운팅
@@ -69,6 +77,22 @@ export class CircuitBreaker {
   }
 }
 
-// AI B 구현 대상: 지수 백오프 및 DLQ 엔진 (TEST-08 ~ TEST-10 대상, 현재 undefined)
-export const calculateBackoff = undefined;
-export const DeadLetterQueue = undefined;
+/** Calculate the capped exponential delay for a 1-indexed retry attempt. */
+export function calculateBackoff(attempt, baseDelay, maxDelay) {
+  return Math.min(baseDelay * Math.pow(2, attempt - 1), maxDelay);
+}
+
+/** In-memory store for payloads that have exhausted their retry attempts. */
+export class DeadLetterQueue {
+  constructor() {
+    this.items = [];
+  }
+
+  get length() {
+    return this.items.length;
+  }
+
+  push(payload, error) {
+    this.items.push({ payload, error, timestamp: Date.now() });
+  }
+}
