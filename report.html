@@ -121,8 +121,8 @@
       <div class="badge badge-pass">T05 Verified · 10/10 PASS</div>
       <h1 class="report-title">멀티 AI 세션 인수인계 무결성 비교 보고서</h1>
       <div class="report-meta">
-        <span>대상 저장소: aleph-04-daily</span>
-        <span>인계 도구: session-sync CLI (Notion 2-Tier Engine)</span>
+        <span>대상 저장소: <a href="https://github.com/mmmphyun/aleph-04-daily" target="_blank">aleph-04-daily</a></span>
+        <span>인계 엔진 저장소: <a href="https://github.com/mmmphyun/aleph-05-memory" target="_blank">aleph-05-memory</a> (session-sync CLI)</span>
         <span>보고서 공개: 무로그인 인증 불필요</span>
       </div>
     </header>
@@ -233,6 +233,11 @@
         <li><strong>Notion 2-Tier DB 업로드 (push)</strong>: <code>session-sync push --phase A_END</code>로 9대 가드레일(회피단어 차단, 최소 분량, ADR 필수) 통과 후 노션 DB에 원격 영속화 (Notion Page ID: <code>3e904d37-c225-81b3-be3d-e4f12e7cbfb2</code>).</li>
         <li><strong>AI B 대화 컨텍스트 격리 복원 (fetch)</strong>: AI B는 이전 대화 전문 없이 <code>session-sync fetch --latest --verify</code>를 통해 Git 작업 트리와 인수인계서만 공급받아 잔여 5개 검사를 100% 완성.</li>
       </ol>
+
+      <div style="background:#f5f2eb; border:1px solid #d0cbc0; border-radius:4px; padding:1rem; margin-top:1.25rem; font-size:0.875rem;">
+        <strong>동기화 엔진 소스 레포지토리:</strong> <a href="https://github.com/mmmphyun/aleph-05-memory" target="_blank" style="color:#1a73e8; font-family:'JetBrains Mono',monospace;">https://github.com/mmmphyun/aleph-05-memory</a><br>
+        <span style="color:#555;">본 과제에서 활용된 7섹션 인수인계 가드레일, Notion 2-Tier 동기화, SWE-agent 불변식 검증기, RRF 검색 엔진의 전체 소스코드는 상기 <code>aleph-05-memory</code> 독립 레포지토리에 모듈화되어 관리됩니다.</span>
+      </div>
     </section>
   </div>
 </body>
