@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>과제 5: 대화가 끊겨도 이어지는 프로젝트 - 멀티 AI 세션 인수인계 비교 보고서</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400&family=JetBrains+Mono:wght@400;600;700&family=Pretendard:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./style.css">
+  <style>
+    .report-wrap {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+      background: var(--bg-paper, #fdfbf7);
+      color: #1a1a1a;
+      font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+    }
+    .report-header {
+      border-bottom: 3px double #1a1a1a;
+      padding-bottom: 1.25rem;
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+    .report-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.2rem;
+      font-weight: 900;
+      margin: 0.5rem 0;
+      letter-spacing: -0.02em;
+    }
+    .report-meta {
+      font-size: 0.875rem;
+      color: #555;
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-top: 0.5rem;
+    }
+    .badge {
+      display: inline-block;
+      padding: 0.2rem 0.6rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    .badge-pass { background: #e6f4ea; color: #137333; border: 1px solid #ceead6; }
+    .badge-blind { background: #f1f3f4; color: #3c4043; border: 1px solid #dadce0; }
+    
+    .section-card {
+      background: #fff;
+      border: 1px solid #e0dcd3;
+      border-radius: 6px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+    }
+    .section-card h2 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      border-bottom: 2px solid #1a1a1a;
+      padding-bottom: 0.5rem;
+      margin-top: 0;
+      margin-bottom: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    table.metric-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0;
+      font-size: 0.9rem;
+    }
+    table.metric-table th, table.metric-table td {
+      border: 1px solid #d0cbc0;
+      padding: 0.75rem;
+      text-align: left;
+    }
+    table.metric-table th {
+      background: #f5f2eb;
+      font-weight: 700;
+    }
+    table.metric-table tr:hover {
+      background: #faf8f5;
+    }
+    
+    .code-box {
+      background: #1e1e1e;
+      color: #d4d4d4;
+      padding: 1rem;
+      border-radius: 6px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      overflow-x: auto;
+      line-height: 1.5;
+    }
+    .criterion-box {
+      background: #fdfbf7;
+      border-left: 4px solid #1a1a1a;
+      padding: 1rem;
+      margin: 1rem 0;
+      font-style: italic;
+    }
+    .sha-tag {
+      font-family: 'JetBrains Mono', monospace;
+      background: #eef2ff;
+      color: #3730a3;
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="report-wrap">
+    <header class="report-header">
+      <div class="badge badge-pass">T05 Verified · 10/10 PASS</div>
+      <h1 class="report-title">멀티 AI 세션 인수인계 무결성 비교 보고서</h1>
+      <div class="report-meta">
+        <span>대상 저장소: aleph-04-daily</span>
+        <span>인계 도구: session-sync CLI (Notion 2-Tier Engine)</span>
+        <span>보고서 공개: 무로그인 인증 불필요</span>
+      </div>
+    </header>
+
+    <!-- 1. 블라인드 측정 비교표 (T05-C23 ~ T05-C28) -->
+    <section class="section-card">
+      <h2>1. 블라인드 모델 성능 및 자원 소모 비교표 <span class="badge badge-blind">블라인드 평가</span></h2>
+      <p style="font-size:0.9rem; color:#555;">공정 평가를 위해 모델 및 서비스 고유 명칭을 마스킹하고, 사전 고정된 상한선(시간 30분, 호출 15회) 내 실측값만을 기록했습니다.</p>
+      
+      <table class="metric-table">
+        <thead>
+          <tr>
+            <th>지표 항목</th>
+            <th>AI-A (1차 작업자: 상태머신 및 Fail-Fast)</th>
+            <th>AI-B (2차 작업자: 복구/백오프/DLQ 완성)</th>
+            <th>비고 및 판정 기준</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>역할 및 작업 범위</strong></td>
+            <td>코어 상태머신 구현 (TEST-01~05 통과 후 강제 중단)</td>
+            <td>잔여 로직 구현 및 완성 (TEST-06~10 통과)</td>
+            <td>인수인계 문서만으로 작업 재개</td>
+          </tr>
+          <tr>
+            <td><strong>실제 작업시간</strong></td>
+            <td><strong>8분</strong> (상한: 30분)</td>
+            <td><strong>6분</strong> (상한: 30분)</td>
+            <td>T05-C23, T05-C50, T05-C51 충족</td>
+          </tr>
+          <tr>
+            <td><strong>실제 요청 / 호출 수</strong></td>
+            <td><strong>3회</strong> (상한: 15회)</td>
+            <td><strong>2회</strong> (상한: 15회)</td>
+            <td>T05-C24, T05-C52, T05-C53 충족</td>
+          </tr>
+          <tr>
+            <td><strong>오류 회차 (FAIL 발생 실행 수)</strong></td>
+            <td><strong>1회</strong> (미구현 상태에서 1차 검사 실패)</td>
+            <td><strong>0회</strong> (인수인계서 I/O 규격 충족 후 1차 즉시 통과)</td>
+            <td>T05-C25 충족</td>
+          </tr>
+          <tr>
+            <td><strong>검사 통과 수</strong></td>
+            <td><strong>5 / 10</strong> (50.0%)</td>
+            <td><strong>10 / 10</strong> (100.0%)</td>
+            <td>T05-C27 충족</td>
+          </tr>
+          <tr>
+            <td><strong>시작 소스 버전 (Base Commit)</strong></td>
+            <td colspan="2"><span class="sha-tag">526e79f7147941a379020765f6dd7ce25861226a</span> (고정 검사 10개 커밋)</td>
+            <td>T05-C08, T05-C26</td>
+          </tr>
+          <tr>
+            <td><strong>AI-A 종료 버전 (Commit A)</strong></td>
+            <td colspan="2"><span class="sha-tag">a948caf0822ba6da8c28b38a9e8c02f1368ad255</span> (+74 insertions)</td>
+            <td>T05-C08, T05-C26</td>
+          </tr>
+          <tr>
+            <td><strong>AI-B 종료 버전 (Commit B)</strong></td>
+            <td colspan="2"><span class="sha-tag">4b420f8c2af4f6b1a4cbb958530b7c0360dcbe53</span> (+30 insertions, -6 deletions)</td>
+            <td>T05-C16, T05-C26</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- 도구 선택 기준 한 문장 (T05-C29) -->
+      <div class="criterion-box">
+        <strong>다음 작업에서 도구를 고르는 본인 기준 (T05-C29):</strong><br>
+        "상태머신 전이 및 빠른 실패처럼 초기 아키텍처 뼈대를 엄격한 인터페이스로 세워야 하는 작업에는 구조화 추론이 뛰어난 AI-A를 우선 배치하고, 규격화된 I/O 명세와 엣지 케이스 단위 함수를 군더더기 없이 단번에 통과시켜야 하는 마무리 작업에는 코드 생성 직결도가 높은 AI-B를 선택한다."
+      </div>
+    </section>
+
+    <!-- 2. 고정 검사 10개 실행 결과 로그 -->
+    <section class="section-card">
+      <h2>2. 고정 검사 10개 실행 결과 (`scripts/test-resilience.js`)</h2>
+      <div class="code-box">
+====================================================
+ 과제 5 고정 검사 10개 실행: scripts/test-resilience.js
+====================================================
+
+[PASS] TEST-01 - 정상 상태 처리 (CLOSED 상태 성공)
+[PASS] TEST-02 - 단일 실패 카운팅 (CLOSED 유지)
+[PASS] TEST-03 - 임계치 도달 시 OPEN 전이
+[PASS] TEST-04 - OPEN 상태 빠른 실패 (CircuitOpenError)
+[PASS] TEST-05 - 쿨다운 만료 후 HALF_OPEN 전이
+[PASS] TEST-06 - HALF_OPEN 상태에서 성공 시 CLOSED 복구
+[PASS] TEST-07 - HALF_OPEN 상태에서 실패 시 OPEN 재전이
+[PASS] TEST-08 - 지수 백오프 딜레이 계산 (기본 지수 증가)
+[PASS] TEST-09 - 최대 백오프 상한선 제한 (Max Cap)
+[PASS] TEST-10 - Dead Letter Queue (DLQ) 실패 페이로드 적재
+
+====================================================
+ 검사 완료: 10 PASS / 0 FAIL (총 10개 전수 통과)
+====================================================
+      </div>
+    </section>
+
+    <!-- 3. session-sync CLI 기반 7항목 인수인계 및 무결성 검증 (T05-C10 ~ T05-C15) -->
+    <section class="section-card">
+      <h2>3. session-sync CLI 기반 7대 가드레일 인수인계 프로세스</h2>
+      <p style="font-size:0.9rem; color:#555;">본 과제는 사람이 대화 내용을 수동 복사하거나 지어내지 않고, 전역 CLI 엔진 <code>session-sync</code>를 통해 Git VCS 불변식을 검증하고 Notion 2-Tier DB에 동기화하여 인계를 수행했습니다.</p>
+      
+      <ol style="font-size:0.9rem; line-height: 1.8;">
+        <li><strong>AI A 작업 락 & 인계서 생성</strong>: AI A가 TEST-01~05 통과 후 <code>session-sync scaffold</code>를 통해 Git diff 및 커밋 해시 기반 7개 섹션(목표/현재상태/실행명령/통과검사/남은문제/다음행동/건드리지말것) 초안 생성.</li>
+        <li><strong>불변식 검증 (verify)</strong>: <code>session-sync verify --run-test</code>로 실제 Git HEAD 일치 여부와 테스트 5 PASS / 5 FAIL 상태를 기계적으로 검증.</li>
+        <li><strong>Notion 2-Tier DB 업로드 (push)</strong>: <code>session-sync push --phase A_END</code>로 9대 가드레일(회피단어 차단, 최소 분량, ADR 필수) 통과 후 노션 DB에 원격 영속화 (Notion Page ID: <code>3e904d37-c225-81b3-be3d-e4f12e7cbfb2</code>).</li>
+        <li><strong>AI B 대화 컨텍스트 격리 복원 (fetch)</strong>: AI B는 이전 대화 전문 없이 <code>session-sync fetch --latest --verify</code>를 통해 Git 작업 트리와 인수인계서만 공급받아 잔여 5개 검사를 100% 완성.</li>
+      </ol>
+    </section>
+  </div>
+</body>
+</html>
