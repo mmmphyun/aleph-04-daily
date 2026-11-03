@@ -1,17 +1,6 @@
 [
   {
     "signal_id": "hn-maxitem",
-    "normalized_value": 49937683,
-    "unit": "items",
-    "source_name": "Hacker News (Firebase API)",
-    "source_url": "https://hacker-news.firebaseio.com/v0/maxitem.json",
-    "source_time": "2026-10-02T19:41:23.000Z",
-    "fetched_at": "2026-10-02T19:41:23.165Z",
-    "record_timezone": "Asia/Seoul",
-    "record_date": "2026-10-03"
-  },
-  {
-    "signal_id": "hn-maxitem",
     "normalized_value": 49946554,
     "unit": "items",
     "source_name": "Hacker News (Firebase API)",
@@ -350,5 +339,16 @@
     "fetched_at": "2026-11-02T22:57:02.009Z",
     "record_timezone": "Asia/Seoul",
     "record_date": "2026-11-03"
+  },
+  {
+    "signal_id": "hn-maxitem",
+    "normalized_value": 50357894,
+    "unit": "items",
+    "source_name": "Hacker News (Firebase API)",
+    "source_url": "https://hacker-news.firebaseio.com/v0/maxitem.json",
+    "source_time": "2026-11-03T20:43:16.000Z",
+    "fetched_at": "2026-11-03T20:43:16.104Z",
+    "record_timezone": "Asia/Seoul",
+    "record_date": "2026-11-04"
   }
 ]
